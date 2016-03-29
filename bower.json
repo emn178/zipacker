@@ -1,0 +1,8 @@
+{
+  "name": "zipacker",
+  "version": "0.1.0",
+  "main": ["src/zipacker.js"],
+  "ignore": [
+    "samples"
+  ]
+}

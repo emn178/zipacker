@@ -1,0 +1,97 @@
+body, html, h1, h2 {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto Slab', serif;
+}
+
+#header {
+  background-color: #2d2d2d;
+  color: white;
+  text-align: center;
+}
+
+#description {
+  margin: 20px;
+  text-align: center;
+  font-size: 20px;
+}
+
+#footer {
+  margin-top: 40px;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #777;
+  border-top: 1px solid #eee;
+  text-align: center;
+}
+
+#code-block {
+  margin: 10px auto;
+  width: 80%;
+}
+
+#code-block h3 {
+  text-align: center;
+}
+
+#buttons {
+  text-align: center;
+  margin: 10px auto;
+  width: 80%;
+}
+
+button {
+  text-align: center;
+  padding: 10px 20px;
+  font-size: 18px;
+}
+
+textarea {
+  font-family:Consolas,'Lucida Console','DejaVu Sans Mono',monospace;
+  font-size: 12pt;
+  max-width: 95%;
+  width: 95%;
+  height: 200px;
+  border: 3px double #ccc;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  background: #e0e0e0; /* Old browsers */
+  background: -moz-linear-gradient(top, #e0e0e0 0%, #ffffff 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e0e0e0), color-stop(100%,#ffffff)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #e0e0e0 0%,#ffffff 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #e0e0e0 0%,#ffffff 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #e0e0e0 0%,#ffffff 100%); /* IE10+ */
+  background: linear-gradient(to bottom, #e0e0e0 0%,#ffffff 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e0e0e0', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+}
+
+#main {
+  width: 80%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/*.downloading #progress, .downloading #progress-text {
+  display: block;
+}
+#progress, #progress-text {
+  display: none;
+}*/
+
+/*
+#progress {
+  color: white;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  height: 20px;
+  width: 100%;
+  font-size: 18px;
+  padding-top: 75px;
+  text-align: center;
+}
+*/

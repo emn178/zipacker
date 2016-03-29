@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Zipacker</title>
+  <meta name="viewport" content="user-scalable=no, width=device-width">
+  <meta name="apple-mobile-web-app-capable" content="no">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script src="https://cdn.rawgit.com/eligrey/FileSaver.js/62d219a0fac54b94cd4f230e7bfc55aa3f8dcfa4/FileSaver.min.js"></script>
+  <script src="https://cdn.rawgit.com/emn178/preloader/master/build/preloader.min.js"></script>
+  <script src="js/zip.js"></script>
+  <script src="js/zip-fs.js"></script>
+  <script src="js/zip-ext.js"></script>
+  <script type="text/javascript" src="../../src/zipacker.js"></script>
+  <script>
+    if(location.protocol != 'file:') {
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-44208259-3', 'auto');
+      ga('send', 'pageview');
+    }
+  </script>
+</head>
+<body>
+  <div id="header">
+    <h1>Zipacker</h1>
+    <a href="https://github.com/emn178/zipacker"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://github-camo.global.ssl.fastly.net/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+  </div>
+  <div id="body">
+    <div id="description">
+      <p>
+        Click "Download" to zip and download images.
+      </p>
+    </div>
+    <div id="code-block">
+      <h3>Source Code</h3>
+      <pre class="brush: js">
+        var files = ['images/batman.png', 'images/286860169.jpg', 'images/superman.jpg'];
+        var packer = new Zipacker({
+          zipFile: 'images.zip',
+          onDownloading: function (loaded, total) {
+            // show progress...
+          },
+          onZipping: function (loaded, total) {
+            // show progress...
+          },
+          onDone: function () {
+            // show done...
+          }
+        });
+        packer.add(files);
+        packer.download();
+      </pre>
+    </div>
+    <div id="main">
+      <div id="buttons">
+        <button id="download">Download</button>
+      </div>
+      <progress id="progress" value="0" max="100" id="progress"></progress>
+      <div id="progress-text"></div>
+    </div>
+  </div>
+  <div id="footer">
+    © 2016 zipacker Demo
+  </div>
+  <script>
+    var files = ['images/batman.png', 'images/286860169.jpg', 'images/superman.jpg'];
+    zip.workerScriptsPath = "js/";
+
+    $('#download').click(function () {
+      var packer = new Zipacker({
+        zipFile: 'images.zip',
+        onDownloading: function (loaded, total) {
+          $('#progress').attr('value', loaded / total * 50);
+          $('#progress-text').text('Downloading: ' + loaded + ' / ' + total);
+        },
+        onZipping: function (loaded, total) {
+          $('#progress').attr('value', 50 + loaded / total * 100);
+          $('#progress-text').text('Zipping: ' + loaded + ' / ' + total);
+        },
+        onDone: function () {
+          $('#progress-text').text('Done');
+        },
+        onError: function(e) {
+          $('#progress').attr('value', 0);
+          $('#progress-text').text('Error: ' + e);
+        }
+      });
+      packer.add(files);
+      packer.download();
+    });
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/styles/shCore.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/styles/shThemeDefault.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shCore.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushJScript.js"></script>
+  <script>
+    SyntaxHighlighter.all();
+  </script>
+</body>
+</html>
