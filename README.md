@@ -14,6 +14,11 @@ You can also install zipacker by using Bower.
 bower install zipacker
 ```
 
+## Requirements
+* [zip.js](https://gildas-lormeau.github.io/zip.js/index.html)  
+* [FileSaver.js](https://github.com/eligrey/FileSaver.js)  
+* [preloader](https://github.com/emn178/preloader)
+
 ## Usage
 ```JavaScript
 var packer = new Zipacker({
