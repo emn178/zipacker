@@ -1,7 +1,7 @@
 /**
  * [zipacker]{@link https://github.com/emn178/zipacker}
  *
- * @version 0.1.0
+ * @version 0.1.1
  * @author Chen, Yi-Cyuan [emn178@gmail.com]
  * @copyright Chen, Yi-Cyuan 2016
  * @license MIT
@@ -15,6 +15,8 @@
     this.options.zipFile = this.options.zipFile || 'download.zip';
     this.options.quota = this.options.quota || 1073741824; // 1 GB
     this.tasks = {};
+    this.textTasks = {};
+    this.fs = new zip.fs.FS();
 
     ['onDownloading', 'onDownloaded', 'onRequestedQuota', 'onRequestedFileSystem',
      'onOpenedFile', 'onCreatedFile', 'onError', 'onZipping', 'onZipped', 'onZippedBlob'].forEach(function (event) {
@@ -22,25 +24,50 @@
     }.bind(this));
   }
 
+  Zipacker.prototype.addBlob = function (blob, file) {
+    this.fs.root.addBlob(file, blob);
+  };
+
+  Zipacker.prototype.addData64URI = function (dataURI, file) {
+    this.fs.root.addData64URI(file, dataURI);
+  };
+
+  Zipacker.prototype.addText = function (text, file) {
+    this.fs.root.addText(file, text);
+  };
+
+  Zipacker.prototype.isDir = function (dir) {
+    return dir === '' || dir.charAt(dir.length - 1) == '/';
+  };
+
   Zipacker.prototype.add = function (files, dir) {
-    var tasks = this.tasks;
+    if (files.constructor == Blob) {
+      return this.addBlob(files, dir);
+    }
+    var tasks = this.tasks, renamable = false, file;
     dir = dir || '';
     if (!Array.isArray(files)) {
       if (typeof files == 'object') {
         for (var url in files) {
-          if (!tasks[url]) {
-            tasks[url] = [];
-          }
-          tasks[url].push(files[url]);
+          this.add(url, files[url]);
         }
         return;
       } else {
+        renamable = this.isDir(dir);
         files = [files];
       }
+    } else if (!this.isDir(dir)) {
+      dir = dir + '/';
     }
     files.forEach(function (url) {
-      var parts = url.split('/');
-      var file = dir + parts[parts.length - 1];
+      if (renamable) {
+        file = dir;
+      } else {
+        var parts = url.split('/');
+        file = parts[parts.length - 1];
+        file = file.split('?')[0];
+        file = dir + file;
+      }
       if (!tasks[url]) {
         tasks[url] = [];
       }
@@ -48,15 +75,14 @@
     });
   };
 
-  Zipacker.prototype.createZipFileSystem = function () {
-    var fs = new zip.fs.FS();
+  Zipacker.prototype.doTasks = function () {
+    var fs = this.fs;
     for (var url in this.tasks) {
       var files = this.tasks[url];
       files.forEach(function (file) {
         fs.root.addHttpContent(file, url);
       });
     }
-    return fs;
   };
 
   Zipacker.prototype.onError = function (e) {
@@ -94,9 +120,9 @@
   };
 
   Zipacker.prototype.onCreatedFile = function (fileEntry) {
-    var fs = this.createZipFileSystem();
+    this.doTasks();
     this.fileEntry = fileEntry;
-    fs.exportFileEntry(fileEntry, this.onZipped, this.onZipping, this.onError);
+    this.fs.exportFileEntry(fileEntry, this.onZipped, this.onZipping, this.onError);
   };
 
   Zipacker.prototype.onOpenedFile = function (fileEntry) {
@@ -129,8 +155,8 @@
     if (temporaryStorage) {
       temporaryStorage.requestQuota(this.options.quota, this.onRequestedQuota, this.onError);
     } else {
-      var fs = this.createZipFileSystem();
-      fs.exportBlob(this.onZippedBlob, this.onZipping, this.onError);
+      this.doTasks();
+      this.fs.exportBlob(this.onZippedBlob, this.onZipping, this.onError);
     }
   };
 

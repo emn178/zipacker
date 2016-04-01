@@ -21,7 +21,7 @@ bower install zipacker
 
 ## Usage
 ```JavaScript
-var packer = new Zipacker({
+var zip = new Zipacker({
   // download zip file name, default is 'download.zip'
   zipFile: 'download.zip',
 
@@ -37,19 +37,32 @@ var packer = new Zipacker({
 });
 
 // add file or files to root
-packer.add(['file1.jpg', 'file2.jpg']);
-packer.add('file3.jpg');
+zip.add(['http://host/file1.jpg', 'rel/path/file2.jpg']);         // put in root 
+zip.add(['http://host/file1.jpg', 'rel/path/file2.jpg'], 'dir');  // put in 'dir' folder
+zip.add('file3.jpg');     // file3.jpg in root
 
 // add file or files to folder
-packer.add('file4.jpg', 'folder/path/');
+zip.add('file4.jpg', 'folder/in/zip/');   // folder/in/zip/file4.jpg
+zip.add('file4.jpg', 'path/to/new.jpg');  // path/to/new.jpg
 
 // add files and rename
-packer.add({
-  'file5.jpg': 'new.jpg',
-  'file6.jpg': 'folder/path/new2.jpg'
+zip.add({
+  'http://host/file5.jpg': 'new.jpg',     // new.jpg in root
+  'file6.jpg': 'folder/in/zip/new2.jpg',  // folder/in/zip/new2.jpg
+  'file7.jpg': 'folder/in/zip/'           // folder/in/zip/file7.jpg
 });
 
-packer.download();
+// add blob
+zip.add(blob, 'file.bin');
+zip.addBlob(blob, 'file.bin');
+
+// add text
+zip.addText('Hello zip', 'file.txt');
+
+// add addData64URI
+zip.addData64URI('data:image/png;base64,...', 'file.png');
+
+zip.download();
 ```
 
 ## License

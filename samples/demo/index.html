@@ -85,6 +85,7 @@
           $('#progress-text').text('Zipping: ' + loaded + ' / ' + total);
         },
         onDone: function () {
+          $('#progress').attr('value', 100);
           $('#progress-text').text('Done');
         },
         onError: function(e) {
