@@ -44,7 +44,7 @@
     if (files.constructor == Blob) {
       return this.addBlob(files, dir);
     }
-    var tasks = this.tasks, renamable = false, file;
+    var tasks = this.tasks, rename = false, file;
     dir = dir || '';
     if (!Array.isArray(files)) {
       if (typeof files == 'object') {
@@ -53,14 +53,14 @@
         }
         return;
       } else {
-        renamable = this.isDir(dir);
+        rename = !this.isDir(dir);
         files = [files];
       }
     } else if (!this.isDir(dir)) {
       dir = dir + '/';
     }
     files.forEach(function (url) {
-      if (renamable) {
+      if (rename) {
         file = dir;
       } else {
         var parts = url.split('/');
