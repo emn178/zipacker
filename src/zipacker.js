@@ -1,7 +1,7 @@
 /**
  * [zipacker]{@link https://github.com/emn178/zipacker}
  *
- * @version 0.1.1
+ * @version 0.1.2
  * @author Chen, Yi-Cyuan [emn178@gmail.com]
  * @copyright Chen, Yi-Cyuan 2016
  * @license MIT
@@ -18,7 +18,7 @@
     this.textTasks = {};
     this.fs = new zip.fs.FS();
 
-    ['onDownloading', 'onDownloaded', 'onRequestedQuota', 'onRequestedFileSystem',
+    ['onDownloading', 'onDownloaded', 'onRequestedQuota', 'onRequestedFileSystem', 'onRequestedError',
      'onOpenedFile', 'onCreatedFile', 'onError', 'onZipping', 'onZipped', 'onZippedBlob'].forEach(function (event) {
       this[event] = this[event].bind(this);
     }.bind(this));
@@ -100,23 +100,24 @@
     }
   };
 
-  Zipacker.prototype.onDone = function () {
+  Zipacker.prototype.onZipped = function () {
     if (this.options.onZipped) {
       this.options.onZipped.call(this);
     }
+    location.href = this.fileEntry.toURL();
     if (this.options.onDone) {
       this.options.onDone.call(this);
     }
   };
 
-  Zipacker.prototype.onZipped = function () {
-    this.onDone();
-    location.href = this.fileEntry.toURL();
-  };
-
   Zipacker.prototype.onZippedBlob = function (blob) {
-    this.onDone();
+    if (this.options.onZipped) {
+      this.options.onZipped.call(this);
+    }
     saveAs(blob, this.options.zipFile);
+    if (this.options.onDone) {
+      this.options.onDone.call(this, link);
+    }
   };
 
   Zipacker.prototype.onCreatedFile = function (fileEntry) {
@@ -135,8 +136,13 @@
     fs.root.getFile(this.options.zipFile, {create: true}, this.onOpenedFile);
   };
 
+  Zipacker.prototype.onRequestedError = function (e) {
+    console.log(e);
+    this.zipInMemory();
+  };
+
   Zipacker.prototype.onRequestedQuota = function (grantedBytes) {
-    requestFileSystem(TEMPORARY , grantedBytes, this.onRequestedFileSystem, this.onError);
+    requestFileSystem(TEMPORARY , grantedBytes, this.onRequestedFileSystem, this.onRequestedError);
   };
 
   Zipacker.prototype.onDownloading = function (loaded, total) {
@@ -153,11 +159,15 @@
       this.options.onDownloaded.call(this);
     }
     if (temporaryStorage) {
-      temporaryStorage.requestQuota(this.options.quota, this.onRequestedQuota, this.onError);
+      temporaryStorage.requestQuota(this.options.quota, this.onRequestedQuota, this.onRequestedError);
     } else {
-      this.doTasks();
-      this.fs.exportBlob(this.onZippedBlob, this.onZipping, this.onError);
+      this.zipInMemory();
     }
+  };
+
+  Zipacker.prototype.zipInMemory = function () {
+    this.doTasks();
+    this.fs.exportBlob(this.onZippedBlob, this.onZipping, this.onError);
   };
 
   Zipacker.prototype.download = function () {
