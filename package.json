@@ -1,0 +1,27 @@
+{
+  "name": "zipacker",
+  "version": "0.2.0",
+  "description": "Zip and download files in client side.",
+  "main": "src/zipacker.js",
+  "devDependencies": {
+    "uglify-js": "^3.1.9"
+  },
+  "scripts": {
+    "compress": "uglifyjs src/zipacker.js -c -m eval --comments --output build/zipacker.min.js",
+    "build": "npm run compress"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/emn178/zipacker.git"
+  },
+  "keywords": [
+    "zip",
+    "download"
+  ],
+  "license": "MIT",
+  "author": "Chen, Yi-Cyuan <emn178@gmail.com>",
+  "homepage": "https://github.com/emn178/zipacker",
+  "bugs": {
+    "url": "https://github.com/emn178/zipacker/issues"
+  }
+}

@@ -10,11 +10,8 @@
   <link rel="stylesheet" href="style.css">
   <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
   <script src="https://cdn.rawgit.com/eligrey/FileSaver.js/62d219a0fac54b94cd4f230e7bfc55aa3f8dcfa4/FileSaver.min.js"></script>
-  <script src="https://cdn.rawgit.com/eligrey/Blob.js/master/Blob.js"></script>
   <script src="https://cdn.rawgit.com/emn178/preloader/master/build/preloader.min.js"></script>
-  <script src="js/zip.js"></script>
-  <script src="js/zip-fs.js"></script>
-  <script src="js/zip-ext.js"></script>
+  <script src="js/zip-fs-full-es5.min.js"></script>
   <script type="text/javascript" src="../../src/zipacker.js"></script>
   <script>
     if(location.protocol != 'file:') {
@@ -68,15 +65,16 @@
     </div>
   </div>
   <div id="footer">
-    © 2016 zipacker Demo
+    © 2016-2022 zipacker Demo
   </div>
   <script>
     var files = ['images/batman.png', 'images/286860169.jpg', 'images/superman.jpg'];
     zip.workerScriptsPath = "js/";
 
-    $('#download').click(function () {
+    $('#download').click(async function () {
       var packer = new Zipacker({
         zipFile: 'images.zip',
+        password: '1234',
         onDownloading: function (loaded, total) {
           $('#progress').attr('value', loaded / total * 50);
           $('#progress-text').text('Downloading: ' + loaded + ' / ' + total);

@@ -25,8 +25,8 @@ var zip = new Zipacker({
   // download zip file name, default is 'download.zip'
   zipFile: 'download.zip',
 
-  // request quota of temporary storage, default is 1073741824 (1 GB)
-  quota: 1073741824,
+  // password of zip
+  // password: '1234'
 
   // events
   onDownloading: function (loaded, total) {},

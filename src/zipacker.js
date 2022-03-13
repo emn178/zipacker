@@ -1,25 +1,19 @@
 /**
  * [zipacker]{@link https://github.com/emn178/zipacker}
  *
- * @version 0.1.2
+ * @version 0.2.0
  * @author Chen, Yi-Cyuan [emn178@gmail.com]
- * @copyright Chen, Yi-Cyuan 2016
+ * @copyright Chen, Yi-Cyuan 2016-2022
  * @license MIT
  */
 (function () {
-  var requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
-  var temporaryStorage  = navigator.webkitTemporaryStorage;
-
   function Zipacker (options) {
     this.options = options || {};
     this.options.zipFile = this.options.zipFile || 'download.zip';
-    this.options.quota = this.options.quota || 1073741824; // 1 GB
     this.tasks = {};
-    this.textTasks = {};
     this.fs = new zip.fs.FS();
 
-    ['onDownloading', 'onDownloaded', 'onRequestedQuota', 'onRequestedFileSystem', 'onRequestedError',
-     'onOpenedFile', 'onCreatedFile', 'onError', 'onZipping', 'onZipped', 'onZippedBlob'].forEach(function (event) {
+    ['onDownloading', 'onDownloaded', 'onError', 'onZipping', 'onZippedBlob'].forEach(function (event) {
       this[event] = this[event].bind(this);
     }.bind(this));
   }
@@ -100,49 +94,14 @@
     }
   };
 
-  Zipacker.prototype.onZipped = function () {
-    if (this.options.onZipped) {
-      this.options.onZipped.call(this);
-    }
-    location.href = this.fileEntry.toURL();
-    if (this.options.onDone) {
-      this.options.onDone.call(this);
-    }
-  };
-
   Zipacker.prototype.onZippedBlob = function (blob) {
     if (this.options.onZipped) {
       this.options.onZipped.call(this);
     }
     saveAs(blob, this.options.zipFile);
     if (this.options.onDone) {
-      this.options.onDone.call(this, link);
+      this.options.onDone.call(this);
     }
-  };
-
-  Zipacker.prototype.onCreatedFile = function (fileEntry) {
-    this.doTasks();
-    this.fileEntry = fileEntry;
-    this.fs.exportFileEntry(fileEntry, this.onZipped, this.onZipping, this.onError);
-  };
-
-  Zipacker.prototype.onOpenedFile = function (fileEntry) {
-    fileEntry.remove(function () {
-      fileEntry.filesystem.root.getFile(this.options.zipFile, {create: true}, this.onCreatedFile);
-    }.bind(this), this.onError);
-  };
-
-  Zipacker.prototype.onRequestedFileSystem = function (fs) {
-    fs.root.getFile(this.options.zipFile, {create: true}, this.onOpenedFile);
-  };
-
-  Zipacker.prototype.onRequestedError = function (e) {
-    console.log(e);
-    this.zipInMemory();
-  };
-
-  Zipacker.prototype.onRequestedQuota = function (grantedBytes) {
-    requestFileSystem(TEMPORARY , grantedBytes, this.onRequestedFileSystem, this.onRequestedError);
   };
 
   Zipacker.prototype.onDownloading = function (loaded, total) {
@@ -158,16 +117,16 @@
     if (this.options.onDownloaded) {
       this.options.onDownloaded.call(this);
     }
-    if (temporaryStorage) {
-      temporaryStorage.requestQuota(this.options.quota, this.onRequestedQuota, this.onRequestedError);
-    } else {
-      this.zipInMemory();
-    }
+    this.zipInMemory();
   };
 
   Zipacker.prototype.zipInMemory = function () {
     this.doTasks();
-    this.fs.exportBlob(this.onZippedBlob, this.onZipping, this.onError);
+    this.fs.exportBlob({
+      onprogress: this.onZipping,
+      password: this.options.password,
+      zipCrypto: !!this.options.password
+    }).then(this.onZippedBlob, this.onError);
   };
 
   Zipacker.prototype.download = function () {
