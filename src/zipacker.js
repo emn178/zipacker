@@ -1,7 +1,7 @@
 /**
  * [zipacker]{@link https://github.com/emn178/zipacker}
  *
- * @version 0.2.0
+ * @version 0.3.0
  * @author Chen, Yi-Cyuan [emn178@gmail.com]
  * @copyright Chen, Yi-Cyuan 2016-2022
  * @license MIT
@@ -13,7 +13,7 @@
     this.tasks = {};
     this.fs = new zip.fs.FS();
 
-    ['onDownloading', 'onDownloaded', 'onError', 'onZipping', 'onZippedBlob'].forEach(function (event) {
+    ['onError', 'onZipping', 'onZippedBlob'].forEach(function (event) {
       this[event] = this[event].bind(this);
     }.bind(this));
   }
@@ -104,22 +104,6 @@
     }
   };
 
-  Zipacker.prototype.onDownloading = function (loaded, total) {
-    if (this.options.onProgress) {
-      this.options.onProgress.call(this, loaded, total, 'download');
-    }
-    if (this.options.onDownloading) {
-      this.options.onDownloading.call(this, loaded, total);
-    }
-  };
-
-  Zipacker.prototype.onDownloaded = function () {
-    if (this.options.onDownloaded) {
-      this.options.onDownloaded.call(this);
-    }
-    this.zipInMemory();
-  };
-
   Zipacker.prototype.zipInMemory = function () {
     this.doTasks();
     this.fs.exportBlob({
@@ -130,12 +114,7 @@
   };
 
   Zipacker.prototype.download = function () {
-    var urls = Object.keys(this.tasks);
-    preload({
-      files: urls,
-      onProgress: this.onDownloading,
-      onLoad: this.onDownloaded
-    });
+    this.zipInMemory();
   };
 
   window.Zipacker = Zipacker;

@@ -42,10 +42,8 @@
         var files = ['images/batman.png', 'images/286860169.jpg', 'images/superman.jpg'];
         var packer = new Zipacker({
           zipFile: 'images.zip',
-          onDownloading: function (loaded, total) {
-            // show progress...
-          },
-          onZipping: function (loaded, total) {
+          password: '1234',
+          onProgress: function (progress, total) {
             // show progress...
           },
           onDone: function () {
@@ -75,13 +73,9 @@
       var packer = new Zipacker({
         zipFile: 'images.zip',
         password: '1234',
-        onDownloading: function (loaded, total) {
-          $('#progress').attr('value', loaded / total * 50);
-          $('#progress-text').text('Downloading: ' + loaded + ' / ' + total);
-        },
-        onZipping: function (loaded, total) {
-          $('#progress').attr('value', 50 + loaded / total * 100);
-          $('#progress-text').text('Zipping: ' + loaded + ' / ' + total);
+        onProgress: function (progress, total) {
+          $('#progress').attr('value', progress / total * 100);
+          $('#progress-text').text('Progress: ' + progress + ' / ' + total);
         },
         onDone: function () {
           $('#progress').attr('value', 100);

@@ -1,6 +1,6 @@
 {
   "name": "zipacker",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Zip and download files in client side.",
   "main": "src/zipacker.js",
   "devDependencies": {

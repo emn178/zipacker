@@ -1,5 +1,12 @@
 # Change Log
 
+## v0.3.0 / 2022-03-15
+### Removed
+- preloader
+
+### Changed
+- onZipping and onDownloading changed to onProgress
+
 ## v0.2.0 / 2022-03-13
 ### Changed
 - upgrade zip.js

@@ -16,8 +16,7 @@ bower install zipacker
 
 ## Requirements
 * [zip.js](https://gildas-lormeau.github.io/zip.js/index.html)  
-* [FileSaver.js](https://github.com/eligrey/FileSaver.js)  
-* [preloader](https://github.com/emn178/preloader)
+* [FileSaver.js](https://github.com/eligrey/FileSaver.js)
 
 ## Usage
 ```JavaScript
@@ -29,9 +28,7 @@ var zip = new Zipacker({
   // password: '1234'
 
   // events
-  onDownloading: function (loaded, total) {},
-  onDownloaded: function () {},
-  onZipping: function (loaded, total) {},
+  onProgress: function (progress, total) {},
   onDone: function () {},
   onError: function (e) {}
 });
